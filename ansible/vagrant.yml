@@ -4,6 +4,7 @@
     - { role: roles/common }
     - { role: roles/web    }
     - { role: roles/db     }
+    - { role: roles/app     }
   vars:
     app_domain: shokai.localhost.com
     app_root_path: /app

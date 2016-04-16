@@ -1,0 +1,11 @@
+- stat: path={{ app_root_path }}/composer.phar
+  register: f
+
+- name: Install composer
+  shell: cd {{ app_root_path }} && curl -s http://getcomposer.org/installer | php
+  when: not f.stat.exists
+
+- name: Composer install
+  shell: cd {{ app_root_path }} && php composer.phar install
+  register: result
+  changed_when: '"Nothing to install or update" not in result.stderr'
