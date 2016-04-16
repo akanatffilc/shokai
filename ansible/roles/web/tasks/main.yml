@@ -47,39 +47,6 @@
   notify:
     - reload php-fpm
 
-- name: Install field reports
-  copy: src=php/reports-1.5.2-linux.tar.gz dest=/usr/local/src/
-
-- name: Install Field Reports
-  shell: |
-    cd /usr/local/src &&
-    tar zxvf reports-1.5.2-linux.tar.gz &&
-    cd reports-1.5.2-linux &&
-    rpm -ivh reports-1.5.2-x86_64.rpm &&
-    cd php &&
-    chmod 777 .
-    creates=/usr/local/src/reports-1.5.2-linux
-
-- name: Build php_reports
-  sudo: False
-  shell: |
-    cd /usr/local/src/reports-1.5.2-linux/php &&
-    tar zxvf php_reports-1.5.2.tar.gz &&
-    cd php_reports-1.5.2 &&
-    export EXTRA_LDFLAGS="-lreports" &&
-    phpize &&
-    ./configure
-    creates=/usr/local/src/reports-1.5.2-linux/php/php_reports-1.5.2/modules/php_reports.so
-
-- name: Install php_reports
-  shell: |
-    cd /usr/local/src/reports-1.5.2-linux/php/php_reports-1.5.2 &&
-    sudo make install
-    creates=/usr/lib/php/modules/php_reports.so
-
-- name: Copy php_reports.ini
-  copy: src=php/php_reports.ini dest=/etc/php.d/php_reports.ini
-
 - name: Change owner for php directories
   shell: |
     sudo chgrp -R nginx /var/lib/php
