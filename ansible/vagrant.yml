@@ -1,0 +1,10 @@
+- hosts: all
+  sudo: true
+  roles:
+    - { role: roles/common }
+    - { role: roles/web    }
+    - { role: roles/db     }
+  vars:
+    app_domain: shokai.localhost.com
+    app_root_path: /app
+    nginx_use_basic: false

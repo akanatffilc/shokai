@@ -1,0 +1,15 @@
+- name: Install mysql repository
+  yum: name=http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm state=present
+
+- name: Create my.cnf
+  copy: src=mysql/my.cnf dest=/etc/my.cnf
+  notify:
+    - restart mysqld
+
+- name: Install yum packages
+  yum: name={{ item }} state=installed
+  with_items:
+    - mysql-community-server
+
+- name: Run mysqld
+  service: name=mysqld state=started enabled=yes

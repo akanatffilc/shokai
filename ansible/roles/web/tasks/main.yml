@@ -1,0 +1,109 @@
+- name: Install nginx repoository
+  yum: name=http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm state=present
+
+- name: Install yum packages from nginx
+  yum: name={{ item }} state=installed enablerepo=nginx
+  with_items:
+    - nginx
+
+- name: Install yum packages from remi
+  yum: name={{ item }} state=installed enablerepo=remi,remi-php56
+  with_items:
+    - php
+    - php-devel
+    - php-bcmath
+    - php-common
+    - php-mysql
+    - php-mcrypt
+    - php-cli
+    - php-xml
+    - php-mbstring
+    - php-gd
+    - php-fpm
+    - php-pear
+    # - php-pecl-apc
+    - php-pecl-imagick
+    - php-pecl-xdebug
+    - php-pecl-zendopcache
+    - php-pecl-memcached
+    - php-pecl-redis
+    - php-pecl-amqp
+
+- name: Install yum packages from remi
+  yum: name={{ item }} state=installed enablerepo=remi,remi-php56 disablerepo=epel
+  with_items:
+    - php-pecl-yaml
+
+- name: Create php.ini
+  copy: src=php/php.ini dest=/etc/php.ini
+  notify:
+    - reload php-fpm
+
+- name: Create php-fpm config file
+  copy: src=php/{{ item }} dest=/etc/{{ item }}
+  with_items:
+    - php-fpm.conf
+    - php-fpm.d/www.conf
+  notify:
+    - reload php-fpm
+
+- name: Install field reports
+  copy: src=php/reports-1.5.2-linux.tar.gz dest=/usr/local/src/
+
+- name: Install Field Reports
+  shell: |
+    cd /usr/local/src &&
+    tar zxvf reports-1.5.2-linux.tar.gz &&
+    cd reports-1.5.2-linux &&
+    rpm -ivh reports-1.5.2-x86_64.rpm &&
+    cd php &&
+    chmod 777 .
+    creates=/usr/local/src/reports-1.5.2-linux
+
+- name: Build php_reports
+  sudo: False
+  shell: |
+    cd /usr/local/src/reports-1.5.2-linux/php &&
+    tar zxvf php_reports-1.5.2.tar.gz &&
+    cd php_reports-1.5.2 &&
+    export EXTRA_LDFLAGS="-lreports" &&
+    phpize &&
+    ./configure
+    creates=/usr/local/src/reports-1.5.2-linux/php/php_reports-1.5.2/modules/php_reports.so
+
+- name: Install php_reports
+  shell: |
+    cd /usr/local/src/reports-1.5.2-linux/php/php_reports-1.5.2 &&
+    sudo make install
+    creates=/usr/lib/php/modules/php_reports.so
+
+- name: Copy php_reports.ini
+  copy: src=php/php_reports.ini dest=/etc/php.d/php_reports.ini
+
+- name: Change owner for php directories
+  shell: |
+    sudo chgrp -R nginx /var/lib/php
+
+- name: Create self-signed SSL cert
+  command: |
+    openssl req -new -nodes -x509 -subj "/C=US/ST=Oregon/L=Portland/O=IT/CN={{ ansible_fqdn }}" -days 3650 -keyout /etc/nginx/server.key -out /etc/nginx/server.crt -extensions v3_ca creates=/etc/nginx/server.crt
+
+- name: Create nginx virtual.conf
+  template: src=nginx/{{ item }}.j2 dest=/etc/nginx/{{ item }} owner=root group=root mode=0644
+  with_items:
+    - conf.d/virtual.conf
+    - conf.d/default.conf
+    - nginx.conf
+  notify:
+    - reload nginx
+
+- name: Create nginx .htpasswd file
+  copy: src=nginx/.htpasswd dest=/etc/nginx/conf.d/_{{ app_domain }}.htpasswd owner=root group=root
+  notify:
+    - reload nginx
+
+- name: Run nginx
+  service: name=nginx state=started enabled=yes
+
+- name: Run php-fpm
+  service: name=php-fpm state=started enabled=yes
