@@ -1,0 +1,6 @@
+- hosts: all
+  sudo: true
+  roles:
+    - { role: roles/app }
+  vars:
+    app_root_path: /app

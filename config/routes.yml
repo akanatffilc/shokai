@@ -1,0 +1,3 @@
+site_top:
+  path: /
+  defaults: { _controller: 'Shokai\Controller\MainController::indexAction' }
