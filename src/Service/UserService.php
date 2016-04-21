@@ -58,7 +58,7 @@ class UserService extends AbstractService
             
             $user = $this->create($params);
         }
-        $this->app['service.auth']->login($state, $user);
+        $this->app['service.auth']->login($user, ['state' => $state, 'token' => $token]);
         $user->set('last_login', Util::getDatetimeString());
         $this->update($user);
         

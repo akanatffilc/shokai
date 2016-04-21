@@ -5,9 +5,11 @@ namespace Shokai\Service;
 use Shokai\Application;
 use Shokai\Service\AbstractService;
 use League\OAuth2\Client\Provider\Facebook;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 class FacebookService extends AbstractService 
 {
+    private static $permissions = ['public_profile', 'email', 'user_friends'];
     protected $facebook_provider;
     
     public function __construct(Application $app) {
@@ -20,9 +22,13 @@ class FacebookService extends AbstractService
         ]);
     }
     
+    public function getFacebook() {
+        return $this->facebook_provider;
+    }
+    
     public function getAuthorizationUrl() {
         return $this->facebook_provider->getAuthorizationUrl([
-            'scope' => $this->facebook_provider->getDefaultScopes()
+            'scope' => self::$permissions
         ]);
     }
     
@@ -32,7 +38,12 @@ class FacebookService extends AbstractService
         ]);
     }
     
-    public function getResourceOwner($token) {
+    public function getResourceOwner($token = null) {
+        if (empty($token) && !$this->app->hasToken()) {
+            throw new Exception("unable to access token");
+        } else if (empty($token)) {
+            $token = $this->app->getToken();
+        }
         return $this->facebook_provider->getResourceOwner($token);
     }
 }

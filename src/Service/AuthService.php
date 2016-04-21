@@ -41,9 +41,10 @@ class AuthService extends AbstractService
         }
     }
 
-    public function login($state, $model)
+    public function login($model, $fb_info = [])
     {
-        $this->session->set('state', $state);
+        $this->session->set('state', $fb_info['state']);
+        $this->session->set('token', $fb_info['token']);
         $this->session->set('user', $model);
         $this->sessionStorage->regenerate(true);
     }

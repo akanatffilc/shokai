@@ -3,7 +3,6 @@
 namespace Shokai\Controller;
 
 use Shokai\Application;
-use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractController
 {
@@ -13,6 +12,9 @@ abstract class AbstractController
     public function __construct(Application $app) 
     {
         $this->app = $app;
+        if(!$this->app->isLoggedin()) {
+            return $this->redirectLogin();
+        }
     }
     
     public function getGetRequest($param, $default = null) 

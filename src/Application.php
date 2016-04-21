@@ -12,7 +12,7 @@ class Application extends SilexApp
     
     public function isLoggedIn()
     {
-        return $this['session']->has('user');
+        return $this['session']->has('user') && strtotime($this->getUser()->getFbTokenExpiresAt()) >= time();
     }
 
     public function getUser()
@@ -28,6 +28,16 @@ class Application extends SilexApp
     public function getState()
     {
         return $this['session']->get('state');
+    }
+    
+    public function hasToken()
+    {
+        return $this['session']->has('token');
+    }
+
+    public function getToken()
+    {
+        return $this['session']->get('token');
     }
 }
 
