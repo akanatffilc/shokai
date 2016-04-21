@@ -4,18 +4,14 @@ namespace Shokai\Service;
 
 use Shokai\Application;
 use Shokai\Model\User;
-use Shokai\Model\Extension\ModelTrait;
-use Shokai\Table\Extension\TableTrait;
 use Shokai\Table\UserTable;
+use Shokai\Service\Extension\UserServiceTrait;
+use Shokai\Util;
 use Exception;
 
 class UserService extends AbstractService
 {
-    use TableTrait {
-        create as tableTraitCreate;
-        update as tableTraitUpdate;
-    }
-    use ModelTrait;
+    use UserServiceTrait;
 
     protected $modelName = User::class;
     
@@ -38,6 +34,39 @@ class UserService extends AbstractService
             $this->table->rollback();
             throw $e;
         }
-        return $user->getId();
+        return $user;
+    }
+    
+    public function login($state, $code) 
+    {
+        if ($this->app->hasState() && (empty($state) || ($state !== $this->app->getState()))) {
+            $this->app['service.auth']->removeSession('state');
+            return false;
+        }        
+        
+        $token  = $this->app['service.facebook']->getAccessToken($code);
+        $owner  = $this->app['service.facebook']->getResourceOwner($token);
+        
+        $user = $this->findOneByEmail($owner->getEmail());
+        if (empty($user)) {
+            $params = [
+                'email'                 => $owner->getEmail(),
+                'fb_id'                 => $owner->getId(),
+                'fb_token'              => $token->getToken(),
+                'fb_token_expires_at'   => Util::getDatetimeString($token->getExpires())            
+            ];
+            
+            $user = $this->create($params);
+        }
+        $this->app['service.auth']->login($state, $user);
+        $user->set('last_login', Util::getDatetimeString());
+        $this->update($user);
+        
+        return true;
+    }
+    
+    public function logout() 
+    {
+        $this->app['service.auth']->logout();
     }
 }

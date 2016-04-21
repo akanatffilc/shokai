@@ -4,7 +4,6 @@ namespace Shokai\Controller;
 
 use Shokai\Application;
 use Shokai\Controller\AbstractController;
-use Shokai\Util;
 
 class AuthController extends AbstractController 
 {
@@ -15,7 +14,6 @@ class AuthController extends AbstractController
     
     public function loginAction() 
     {
-
         $authurl = $this->app['service.facebook']->getAuthorizationUrl();
         return $this->app->render('auth/login.html.twig',[
             'auth_url' => $authurl
@@ -27,24 +25,15 @@ class AuthController extends AbstractController
         $state  = $this->getGetRequest('state');
         $code   = $this->getGetRequest('code');
         
-        $token  = $this->app['service.facebook']->getAccessToken($code);
-        $owner  = $this->app['service.facebook']->getResourceOwner($token);
-        
-        $params = [
-            'email'                 => $owner->getEmail(),
-            'fb_id'                 => $owner->getId(),
-            'fb_token'              => $token->getToken(),
-            'fb_token_expires_at'   => Util::getDatetimeString($token->getExpires())            
-        ];
-
-        $this->app['service.user']->create($params);
-        return $this->app->render('main/index.html.twig',[
-            
-        ]);
+        if ($this->app['service.user']->login($state, $code)) {
+            return $this->redirectTop();
+        }
+        return $this->redirectLogout();
     }
     
     public function logoutAction() 
     {
-       return $this->app->render('auth/logout.html.twig');
+        $this->app['service.user']->logout();
+        return $this->redirectLogin();
     }
 }

@@ -14,7 +14,13 @@ class MainController extends AbstractController
     
     public function indexAction()
     {
+        if(!$this->app->isLoggedin()) {
+            return $this->redirectLogin();
+        }
         
+        return $this->app->render('main/index.html.twig', [
+            'message' => 'top mofo'
+        ]);
     }
 }
 

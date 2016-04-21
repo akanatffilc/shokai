@@ -22,4 +22,19 @@ abstract class AbstractController
         }
         return $this->request->get($param, $default);
     }
+    
+    public function redirectTop()
+    {
+        return $this->app->redirect($this->app->path('site_top'));
+    }
+    
+    public function redirectLogin()
+    {
+        return $this->app->redirect($this->app->path('login'));
+    }
+    
+    public function redirectLogout()
+    {
+        return $this->app->redirect($this->app->path('logout'));
+    }
 }
