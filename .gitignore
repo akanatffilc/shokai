@@ -13,5 +13,6 @@ composer.phar
 /.vagrant
 /vendor/
 /nbproject
+/logs/*
 
 !.gitkeep

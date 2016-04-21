@@ -1,3 +1,15 @@
 site_top:
   path: /
   defaults: { _controller: 'Shokai\Controller\MainController::indexAction' }
+ 
+login:
+  path: /login
+  defaults: { _controller: 'Shokai\Controller\AuthController::loginAction' }
+
+login_callback:
+  path: /login/callback
+  defaults: { _controller: 'Shokai\Controller\AuthController::loginCallbackAction' }
+
+logout:
+  path: /logout
+  defaults: { _controller: 'Shokai\Controller\AuthController::logoutAction' }
