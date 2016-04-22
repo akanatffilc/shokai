@@ -103,15 +103,6 @@ abstract class AbstractTable
         return $stmt->fetch();
     }
 
-    public function findByCode($code)
-    {
-        $sql = sprintf('SELECT * FROM `%s` WHERE code = ?', $this->tableName);
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$code]);
-        $this->setFetchModeForModel($stmt);
-        return $stmt->fetch();
-    }
-
     public function count()
     {
         $sql = sprintf('SELECT COUNT(*) FROM `%s`', $this->tableName);
