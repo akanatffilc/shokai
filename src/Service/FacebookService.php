@@ -11,7 +11,7 @@ class FacebookService
     
     protected static $instance;
     
-    public static function getInstance($token) 
+    public static function init($token) 
     {
         if (empty(self::$instance)) {
                 self::$instance = new Facebook([
@@ -21,10 +21,9 @@ class FacebookService
             ]);
         }
         self::$instance->setDefaultAccessToken((string) $token);
-        return self::$instance;
     }
     
-    public static function isFriends($id_a, $id_b)
+    public static function isFriends($app, $id_a, $id_b)
     {
         if ($id_a == $id_b) {
             return false;

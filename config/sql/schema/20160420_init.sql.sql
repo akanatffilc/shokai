@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `shokai`.`friends_list` (
   `user_id` BIGINT NOT NULL,
   `fb_id` VARCHAR(255) NOT NULL,
   `is_favorite` VARCHAR(45) NULL,
-  `email` VARCHAR(255) NOT NULL COMMENT 'fb list of friends\nupdated via batch process',
+  `email` VARCHAR(255) NULL COMMENT 'fb list of friends\nupdated via batch process',
   `gender` VARCHAR(20) NULL,
   `profile_image_url` TEXT NULL,
   `created_at` DATETIME NULL,

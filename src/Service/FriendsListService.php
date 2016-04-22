@@ -3,6 +3,7 @@
 namespace Shokai\Service;
 
 use Shokai\Application;
+use Shokai\Util;
 use Shokai\Model\User;
 use Shokai\Model\FriendsList;
 use Shokai\Table\FriendsListTable;
@@ -29,14 +30,14 @@ class FriendsListService extends AbstractService
 
     public function createFriendsList(User $user)
     {
-        $instance = FacebookService::getInstance($user->getFbToken());
+        FacebookService::init($user->getFbToken());
         $users = $this->app['service.user']->findAll();
-        foreach($users as $user)
+        foreach($users as $u)
         {
             $id_a = $user->getFbId();
-            $id_b = $user->getFbId();
+            $id_b = $u->getFbId();
             
-            $isFriends = FacebookService::isFriends($id_a, $id_b);
+            $isFriends = FacebookService::isFriends($this->app, $id_a, $id_b);
             if ($isFriends) {
                 $params = [
                     'user_id'               => $user->getId(),
