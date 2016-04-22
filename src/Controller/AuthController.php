@@ -14,7 +14,7 @@ class AuthController extends AbstractController
     
     public function loginAction() 
     {
-        $authurl = $this->app['service.facebook']->getAuthorizationUrl();
+        $authurl = $this->app['service.oauth.facebook']->getAuthorizationUrl();
         return $this->app->render('auth/login.html.twig',[
             'auth_url' => $authurl
         ]);

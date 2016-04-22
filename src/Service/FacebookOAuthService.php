@@ -7,7 +7,7 @@ use Shokai\Service\AbstractService;
 use League\OAuth2\Client\Provider\Facebook;
 use Symfony\Component\Security\Acl\Exception\Exception;
 
-class FacebookService extends AbstractService 
+class FacebookOAuthService extends AbstractService 
 {
     private static $permissions = ['public_profile', 'email', 'user_friends'];
     protected $facebook_provider;
@@ -22,7 +22,7 @@ class FacebookService extends AbstractService
         ]);
     }
     
-    public function getFacebook() {
+    public function getFacebookOAuthProvider() {
         return $this->facebook_provider;
     }
     

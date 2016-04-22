@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b1eb07a85053e829975774d8dac8bc8d",
-    "content-hash": "673a926aeec8fa0bc225fef300835aa2",
+    "hash": "f2d288c39b85053124721024a46c1377",
+    "content-hash": "f78294a40524afbc5df2c1105c3c8f05",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -528,6 +528,61 @@
                 "validator"
             ],
             "time": "2015-11-11 03:28:32"
+        },
+        {
+            "name": "facebook/php-sdk-v4",
+            "version": "5.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/facebook-php-sdk-v4.git",
+                "reference": "2c42fb3002953355f12d3c6e8003a9fd5af563d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/facebook-php-sdk-v4/zipball/2c42fb3002953355f12d3c6e8003a9fd5af563d9",
+                "reference": "2c42fb3002953355f12d3c6e8003a9fd5af563d9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "~5.0",
+                "mockery/mockery": "~0.8",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Facebook\\": "src/Facebook/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Facebook Platform"
+            ],
+            "authors": [
+                {
+                    "name": "Facebook",
+                    "homepage": "https://github.com/facebook/facebook-php-sdk-v4/contributors"
+                }
+            ],
+            "description": "Facebook SDK for PHP",
+            "homepage": "https://github.com/facebook/facebook-php-sdk-v4",
+            "keywords": [
+                "facebook",
+                "sdk"
+            ],
+            "time": "2015-11-19 21:07:36"
         },
         {
             "name": "facebook/webdriver",
@@ -1458,6 +1513,55 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "sammyk/facebook-query-builder",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SammyK/FacebookQueryBuilder.git",
+                "reference": "cc5e5b19b4c5afdf33f92c6ded93bf2458218bc0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SammyK/FacebookQueryBuilder/zipball/cc5e5b19b4c5afdf33f92c6ded93bf2458218bc0",
+                "reference": "cc5e5b19b4c5afdf33f92c6ded93bf2458218bc0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SammyK\\FacebookQueryBuilder\\": "src",
+                    "SammyK\\FacebookQueryBuilderTests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sammy Kaye Powers",
+                    "email": "sammyk@sammykmedia.com",
+                    "homepage": "http://www.sammyk.me",
+                    "role": "A PHP nerd who likes to dance"
+                }
+            ],
+            "description": "An elegant and efficient way to generate nested requests for Facebook's Graph API.",
+            "homepage": "https://github.com/SammyK/FacebookQueryBuilder",
+            "keywords": [
+                "facebook",
+                "graph api",
+                "sdk"
+            ],
+            "time": "2015-05-11 21:27:02"
         },
         {
             "name": "silex/silex",

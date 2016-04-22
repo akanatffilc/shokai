@@ -19,7 +19,7 @@ class FacebookUserService extends AbstractService
             $user = $this->app->getUser();
         }
         
-        $owner = $this->app['service.facebook']->getResourceOwner($user->getFbToken());
+        $owner = $this->app['service.oauth.facebook']->getResourceOwner($user->getFbToken());
     }
 }
 

@@ -44,8 +44,8 @@ class UserService extends AbstractService
             return false;
         }        
         
-        $token  = $this->app['service.facebook']->getAccessToken($code);
-        $owner  = $this->app['service.facebook']->getResourceOwner($token);
+        $token  = $this->app['service.oauth.facebook']->getAccessToken($code);
+        $owner  = $this->app['service.oauth.facebook']->getResourceOwner($token);
         
         $user = $this->findOneByEmail($owner->getEmail());
         if (empty($user)) {
