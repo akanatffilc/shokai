@@ -53,4 +53,13 @@ class AuthService extends AbstractService
     {
         $this->session->clear();
     }
+    
+    public function isStateOk($state) 
+    {
+        if ($this->app->hasState() && (empty($state) || ($state !== $this->app->getState()))) {
+            $this->app['service.auth']->removeSession('state');
+            return false;
+        }    
+        return true;
+    }
 }

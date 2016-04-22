@@ -22,8 +22,13 @@ class UserService extends AbstractService
     public function init() {
         $this->setTable(new UserTable($this->app['db']));
     }
-
+    
     public function create($params = [])
+    {
+        return $this->createRecord($params);
+    }
+
+    public function createRecord($params = [])
     {
         $user = $this->getModel($params, $this->modelName);
         try {
@@ -39,10 +44,9 @@ class UserService extends AbstractService
     
     public function login($state, $code) 
     {
-        if ($this->app->hasState() && (empty($state) || ($state !== $this->app->getState()))) {
-            $this->app['service.auth']->removeSession('state');
+        if (!$this->app['service.auth']->isStateOk($state)) {
             return false;
-        }        
+        }
         
         $token  = $this->app['service.oauth.facebook']->getAccessToken($code);
         $owner  = $this->app['service.oauth.facebook']->getResourceOwner($token);
@@ -60,9 +64,9 @@ class UserService extends AbstractService
             
             $user = $this->create($params);
         }
-        $this->app['service.auth']->login($user, ['state' => $state, 'token' => $token]);
+        
+        $this->app['service.auth']->login($user, ['state' => $state, 'token' => $token]);       
         $user->setLastLogin(Util::getDatetimeString());
-        $user->set('updated_at', Util::getDatetimeString());
         $this->update($user);
         
         return true;
