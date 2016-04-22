@@ -4,12 +4,14 @@ namespace Shokai\Service;
 
 use Shokai\Application;
 use Shokai\Service\AbstractService;
+use Shokai\Service\Extension\FacebookTrait;
 use League\OAuth2\Client\Provider\Facebook;
 use Symfony\Component\Security\Acl\Exception\Exception;
 
 class FacebookOAuthService extends AbstractService 
 {
-    private static $permissions = ['public_profile', 'email', 'user_friends'];
+    use FacebookTrait;
+    
     protected $facebook_provider;
     
     public function __construct(Application $app) {
