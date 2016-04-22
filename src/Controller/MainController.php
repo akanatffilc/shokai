@@ -13,10 +13,17 @@ class MainController extends AbstractController
     }
     
     public function indexAction()
-    {
+    {   
         return $this->app->render('main/index.html.twig', [
             'message' => 'top mofo'
         ]);
+    }
+    
+    public function initSetupAction()
+    {
+        $user = $this->app->getUser();
+        $this->app['service.list.friends']->createFriendsList($user);
+        return $this->redirectTop();
     }
 }
 

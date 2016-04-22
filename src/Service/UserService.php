@@ -7,7 +7,6 @@ use Shokai\Model\User;
 use Shokai\Table\UserTable;
 use Shokai\Service\Extension\UserServiceTrait;
 use Shokai\Util;
-use Exception;
 
 class UserService extends AbstractService
 {
@@ -21,25 +20,6 @@ class UserService extends AbstractService
 
     public function init() {
         $this->setTable(new UserTable($this->app['db']));
-    }
-    
-    public function create($params = [])
-    {
-        return $this->createRecord($params);
-    }
-
-    public function createRecord($params = [])
-    {
-        $user = $this->getModel($params, $this->modelName);
-        try {
-            $this->table->beginTransaction();
-            $this->tableTraitCreate($user);
-            $this->table->commit();
-        } catch (Exception $e) {
-            $this->table->rollback();
-            throw $e;
-        }
-        return $user;
     }
     
     public function login($state, $code) 
@@ -62,7 +42,7 @@ class UserService extends AbstractService
                 'updated_at'            => Util::getDatetimeString()
             ];
             
-            $user = $this->create($params);
+            $user = $this->createRecord($params);
         }
         
         $this->app['service.auth']->login($user, ['state' => $state, 'token' => $token]);       

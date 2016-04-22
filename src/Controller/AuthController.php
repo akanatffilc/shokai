@@ -26,7 +26,7 @@ class AuthController extends AbstractController
         $code   = $this->getGetRequest('code');
         
         if ($this->app['service.user']->login($state, $code)) {
-            return $this->redirectTop();
+            return $this->app->redirect($this->app->path('init_setup'));
         }
         return $this->redirectLogout();
     }

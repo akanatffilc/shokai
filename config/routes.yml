@@ -2,7 +2,10 @@
 site_top:
   path: /
   defaults: { _controller: 'Shokai\Controller\MainController::indexAction' }
- 
+init_setup:
+  path: /init
+  defaults: { _controller: 'Shokai\Controller\MainController::initSetupAction' }
+        
 #auth
 login:
   path: /login
