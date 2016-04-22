@@ -31,7 +31,6 @@
         "egulias/email-validator": "~1.2",
         "facebook/webdriver": "^1.0",
 	"league/oauth2-facebook": "~1.0",
-	"sammyk/facebook-query-builder": "^2.0",
 	"facebook/php-sdk-v4" : "~5.0"
     },
     "autoload": {
