@@ -17,6 +17,6 @@ logout:
   defaults: { _controller: 'Shokai\Controller\AuthController::logoutAction' }
 
 #friends
-logout:
+friends_list:
   path: /friends/list
   defaults: { _controller: 'Shokai\Controller\FriendsController::listAction' }
