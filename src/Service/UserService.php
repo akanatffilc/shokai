@@ -53,13 +53,16 @@ class UserService extends AbstractService
                 'email'                 => $owner->getEmail(),
                 'fb_id'                 => $owner->getId(),
                 'fb_token'              => $token->getToken(),
-                'fb_token_expires_at'   => Util::getDatetimeString($token->getExpires())            
+                'fb_token_expires_at'   => Util::getDatetimeString($token->getExpires()),
+                'created_at'            => Util::getDatetimeString(),
+                'updated_at'            => Util::getDatetimeString()
             ];
             
             $user = $this->create($params);
         }
         $this->app['service.auth']->login($user, ['state' => $state, 'token' => $token]);
-        $user->set('last_login', Util::getDatetimeString());
+        $user->setLastLogin(Util::getDatetimeString());
+        $user->set('updated_at', Util::getDatetimeString());
         $this->update($user);
         
         return true;

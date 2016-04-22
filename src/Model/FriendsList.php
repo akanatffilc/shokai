@@ -25,10 +25,4 @@ class User extends AbstractModel
     {
         return $this->get('fb_token_expires_at');
     }
-    
-    public function setLastLogin($datetime)
-    {
-        $this->set('last_login', $datetime);
-        $this->set('updated_at', $datetime);
-    }
 }
