@@ -10,6 +10,6 @@ use Shokai\Service\FriendsListService;
 */
 class FriendsListServiceProvider extends AbstractServiceProvider
 {
-    protected $serviceName = 'service.list.friends';
+    public $serviceName = 'service.list.friends';
     protected $serviceClass = FriendsListService::class;
 }

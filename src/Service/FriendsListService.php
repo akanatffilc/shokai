@@ -27,6 +27,11 @@ class FriendsListService extends AbstractService
     public function create($params) {
         $this->createRecord($params);
     }
+    
+    public function findByUserId()
+    {
+        
+    }
 
     public function createFriendsList(User $user)
     {
@@ -34,19 +39,27 @@ class FriendsListService extends AbstractService
         $users = $this->app['service.user']->findAll();
         foreach($users as $u)
         {
-            $id_a = $user->getFbId();
-            $id_b = $u->getFbId();
+            $a_user_id = $user->getId();
+            $a_fb_id = $user->getFbId();
+            $b_user_id = $u->getId();
+            $b_fb_id = $u->getFbId();
             
-            $isFriends = FacebookService::isFriends($this->app, $id_a, $id_b);
-            if ($isFriends) {
+            $isFriend = $this->isExistsByUserIds($a_user_id, $b_user_id);
+            $canAdd = ($isFriend) ? false : FacebookService::isFriends($a_fb_id, $b_fb_id);
+            if ($canAdd) {
                 $params = [
-                    'user_id'               => $user->getId(),
-                    'fb_id'                 => $id_b,
-                    'created_at'            => Util::getDatetimeString(),
-                    'updated_at'            => Util::getDatetimeString()
+                    'user_id_a'     => $a_user_id,
+                    'user_id_b'     => $b_user_id,
+                    'created_at'    => Util::getDatetimeString(),
+                    'updated_at'    => Util::getDatetimeString()
                 ];
                 $this->create($params);
             }
         }
+    }
+    
+    public function checkDuplicate($a_id, $b_id)
+    {
+        
     }
 }

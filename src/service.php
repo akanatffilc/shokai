@@ -8,6 +8,7 @@ use Shokai\Service\Provider\ShokaiMonologServiceProvider;
 use Shokai\Service\Provider\FacebookOAuthServiceProvider;
 use Shokai\Service\Provider\AuthServiceProvider;
 use Shokai\Service\Provider\UserServiceProvider;
+use Shokai\Service\Provider\UserFbProfileServiceProvider;
 use Shokai\Service\Provider\FriendsListServiceProvider;
   
 $app->register(new ShokaiUrlGeneratorServiceProvider());
@@ -19,4 +20,5 @@ $app->register(new ShokaiMonologServiceProvider());
 $app->register(new FacebookOAuthServiceProvider());
 $app->register(new AuthServiceProvider());
 $app->register(new UserServiceProvider());
+$app->register(new UserFbProfileServiceProvider());
 $app->register(new FriendsListServiceProvider());

@@ -17,23 +17,68 @@ CREATE TABLE IF NOT EXISTS `shokai`.`user` (
   INDEX `ix_user_fb_id_idx` (`fb_id` ASC))
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `shokai`.`friends_list` (
+CREATE TABLE IF NOT EXISTS `shokai`.`user_fb_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT NOT NULL,
-  `fb_id` VARCHAR(255) NOT NULL,
-  `is_favorite` VARCHAR(45) NULL,
-  `email` VARCHAR(255) NULL COMMENT 'fb list of friends\nupdated via batch process',
-  `gender` VARCHAR(20) NULL,
+  `name` VARCHAR(255) NULL,
+  `first_name` VARCHAR(255) NULL,
+  `last_name` VARCHAR(255) NULL,
+  `gender` VARCHAR(45) NULL,
+  `relationship_status` VARCHAR(255) NULL,
+  `birthday` VARCHAR(255) NULL,
   `profile_image_url` TEXT NULL,
+  `link` TEXT NULL,
+  `locale` VARCHAR(45) NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
+  PRIMARY KEY (`id`, `user_id`),
+  INDEX `fk_user_fb_profile_user1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_user_fb_profile_user1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `shokai`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `shokai`.`friends_list` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id_a` BIGINT NOT NULL,
+  `user_id_b` BIGINT NOT NULL,
   `created_at` DATETIME NULL,
   `updated_at` DATETIME NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_friends_list_user_idx` (`user_id` ASC),
-  INDEX `ix_friends_list_fb_id_idx` (`fb_id` ASC),
-  INDEX `ix_friends_list_user_id_fb_id_idx` (`user_id` ASC, `fb_id` ASC),
+  INDEX `fk_friends_list_user1_idx` (`user_id_a` ASC),
+  INDEX `ix_friends_list_user_ids_idx` (`user_id_a` ASC, `user_id_b` ASC),
+  INDEX `fk_friends_list_user2_idx` (`user_id_b` ASC),
   CONSTRAINT `fk_friends_list_user1`
+    FOREIGN KEY (`user_id_a`)
+    REFERENCES `shokai`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_friends_list_user2`
+    FOREIGN KEY (`user_id_b`)
+    REFERENCES `shokai`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `shokai`.`favorites_list` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT NOT NULL,
+  `friends_list_id` BIGINT NOT NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_favorites_list_user1_idx` (`user_id` ASC),
+  INDEX `fk_favorites_list_friends_list1_idx` (`friends_list_id` ASC),
+  CONSTRAINT `fk_favorites_list_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `shokai`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_favorites_list_friends_list1`
+    FOREIGN KEY (`friends_list_id`)
+    REFERENCES `shokai`.`friends_list` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -84,11 +129,24 @@ CREATE TABLE IF NOT EXISTS `shokai`.`user_matches` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `shokai`.`match` (
+CREATE TABLE IF NOT EXISTS `shokai`.`match_list` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `fb_id_a` VARCHAR(255) NOT NULL,
-  `fb_id_b` VARCHAR(255) NOT NULL,
+  `user_id_a` BIGINT NOT NULL,
+  `user_id_b` BIGINT NOT NULL,
   `created_at` DATETIME NULL,
   `updated_at` DATETIME NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  INDEX `fk_match_user1_idx` (`user_id_a` ASC),
+  INDEX `fk_match_user2_idx` (`user_id_b` ASC),
+  INDEX `fk_match_users_idx` (`user_id_a` ASC, `user_id_b` ASC),
+  CONSTRAINT `fk_match_user1`
+    FOREIGN KEY (`user_id_a`)
+    REFERENCES `shokai`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_match_user2`
+    FOREIGN KEY (`user_id_b`)
+    REFERENCES `shokai`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;

@@ -5,7 +5,7 @@ namespace Shokai\Service\Extension;
 use Shokai\Table\Extension\TableTrait;
 use Shokai\Model\Extension\ModelTrait;
  
-trait FriendsListServiceTrait
+trait UserFbProfileServiceTrait
 {
     use TableTrait {
         create as tableTraitCreate;
@@ -13,13 +13,8 @@ trait FriendsListServiceTrait
     }
     use ModelTrait;  
     
-    public function findByUserId($user_id)
+    public function isExistsByUserId($user_id)
     {
-        return $this->table->findByUserId($user_id);
-    }
-    
-    public function isExistsByUserIds($id_a, $id_b)
-    {
-        return $this->table->isExistsByUserIds($id_a, $id_b);
+        return $this->table->isExistsByUserId($user_id);
     }
 }

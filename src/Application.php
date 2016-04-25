@@ -3,6 +3,7 @@
 namespace Shokai;
 
 use Silex\Application as SilexApp;
+use \Exception;
 
 class Application extends SilexApp
 {
@@ -12,7 +13,7 @@ class Application extends SilexApp
     
     public function isLoggedIn()
     {
-        return $this['session']->has('user') && strtotime($this->getUser()->getFbTokenExpiresAt()) >= time();
+        return $this['session']->has('user');
     }
 
     public function getUser()

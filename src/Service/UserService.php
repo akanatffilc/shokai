@@ -4,8 +4,10 @@ namespace Shokai\Service;
 
 use Shokai\Application;
 use Shokai\Model\User;
+use Shokai\Model\UserFbProfile;
 use Shokai\Table\UserTable;
 use Shokai\Service\Extension\UserServiceTrait;
+use Shokai\Service\FacebookService;
 use Shokai\Util;
 
 class UserService extends AbstractService
@@ -22,6 +24,20 @@ class UserService extends AbstractService
         $this->setTable(new UserTable($this->app['db']));
     }
     
+    private function create($owner, $token)
+    {
+        //create user record
+        $user_params = [
+            User::EMAIL                 => $owner->getEmail(),
+            User::FB_ID                 => $owner->getId(),
+            User::FB_TOKEN              => $token->getToken(),
+            User::FB_TOKEN_EXPIRES_AT   => Util::getDatetimeString($token->getExpires()),
+            User::CREATED_AT            => Util::getDatetimeString(),
+            User::UPDATED_AT            => Util::getDatetimeString()
+        ];
+        return $this->createRecord($user_params);
+    }
+    
     public function login($state, $code) 
     {
         if (!$this->app['service.auth']->isStateOk($state)) {
@@ -33,16 +49,7 @@ class UserService extends AbstractService
         
         $user = $this->findOneByEmail($owner->getEmail());
         if (empty($user)) {
-            $params = [
-                'email'                 => $owner->getEmail(),
-                'fb_id'                 => $owner->getId(),
-                'fb_token'              => $token->getToken(),
-                'fb_token_expires_at'   => Util::getDatetimeString($token->getExpires()),
-                'created_at'            => Util::getDatetimeString(),
-                'updated_at'            => Util::getDatetimeString()
-            ];
-            
-            $user = $this->createRecord($params);
+            $user = $this->create($owner, $token);
         }
         
         $this->app['service.auth']->login($user, ['state' => $state, 'token' => $token]);       

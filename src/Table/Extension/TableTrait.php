@@ -25,19 +25,14 @@ trait TableTrait
         return $this->table->findById($id);
     }
 
-    public function findByCode($code)
-    {
-        return $this->table->findByCode($code);
-    }
-
     public function findAll(QueryBuilder $qb = null)
     {
-        return $this->table->findBy($qb);
+        return $this->table->findByObject($qb);
     }
 
     public function findBy(QueryBuilder $qb = null, array $params = [])
     {
-        return $this->table->findBy($qb, $params);
+        return $this->table->findByObject($qb, $params);
     }
 
     public function findOneBy(QueryBuilder $qb = null, array $params = [])
@@ -48,11 +43,6 @@ trait TableTrait
     public function setTable($table)
     {
         $this->table = $table;
-    }
-
-    public function getQueryBuilder()
-    {
-        return $this->table->getQueryBuilder();
     }
 
     public function delete($conditions)

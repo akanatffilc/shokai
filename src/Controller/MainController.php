@@ -22,6 +22,7 @@ class MainController extends AbstractController
     public function initSetupAction()
     {
         $user = $this->app->getUser();
+        $this->app['service.profile.fb.user']->createUserFbProfile($user);
         $this->app['service.list.friends']->createFriendsList($user);
         return $this->redirectTop();
     }

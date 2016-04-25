@@ -6,9 +6,17 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use Shokai\Util;
+use Shokai\Table\Extension\TableTrait;
+use Shokai\Model\Extension\ModelTrait;
 
 abstract class AbstractTable
 {
+    use TableTrait {
+        create as tableTraitCreate;
+        update as tableTraitUpdate;
+    }
+    use ModelTrait;
+    
     /** @var Connection */
     public $db;
 
@@ -53,62 +61,63 @@ abstract class AbstractTable
             ->from($this->tableName, substr($this->tableName, 0, 1));
         return $qb;
     }
-
-    public function findBy(QueryBuilder $qb = null, array $params = [])
+    
+    /**
+     * findByObject
+     * @param string|QueryBuilder $sql
+     * @param array $params
+     * @return Statement
+     */
+    public function findByObject($obj = null, array $params = [], array $options = [])
     {
-        $qb = $qb ?: $this->getQueryBuilder();
-        $stmt = $this->db->prepare($qb);
-        $stmt->execute($params);
-        $this->setFetchModeForModel($stmt);
-        return $stmt->fetchAll();
+        //Object is string or QueryBuilder so if QueryBuilder is null, instantiate
+        if (empty($obj)) {
+            $obj = $obj ?: $this->getQueryBuilder();
+        } 
+        $statement = $this->db->prepare($obj);
+        if(empty($params)) {
+            $statement->execute();
+        } else {
+            $statement->execute($params);
+        }
+        
+        //set  options
+        $o = array_merge([
+                'fetchForModel' => true,
+                'fetch'         => 'all',
+            ],
+            $options);
+        if ($o['fetchForModel']) {
+            $this->setFetchModeForModel($statement);
+        }
+        
+        switch ($o['fetch']) {
+            case 'all'      :
+                return $statement->fetchAll();
+            case 'one'      :
+                return $statement->fetch();
+            case 'column'   :
+                return $statement->fetchColumn(0);
+            default :
+                throw new Exception("AbstractTable->findByObject(): undeclared case for fetch option");
+        }
     }
 
-    public function findBySql($sql, array $params = [])
+    public function findOneBy($qb, $param) 
     {
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        $this->setFetchModeForModel($stmt);
-        return $stmt->fetchAll();
+        return $this->findByObject($qb, $param, ['fetch' => 'one']);
     }
-
-    public function findAsAssocBySql($sql, array $params = [])
-    {
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll();
-    }
-
-    public function findOneBy(QueryBuilder $qb = null, array $params = [])
-    {
-        $qb = $qb ?: $this->getQueryBuilder();
-        $stmt = $this->db->prepare($qb);
-        $stmt->execute($params);
-        $this->setFetchModeForModel($stmt);
-        return $stmt->fetch();
-    }
-
-    public function findRowsBy(QueryBuilder $qb, array $params = [])
-    {
-        $stmt = $this->db->prepare($qb->getSql());
-        $stmt->execute($params);
-        return $stmt->fetchAll();
-    }
-
+    
     public function findById($id)
     {
         $sql = sprintf('SELECT * FROM `%s` WHERE id = ?', $this->tableName);
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
-        $this->setFetchModeForModel($stmt);
-        return $stmt->fetch();
+        return $this->findByObject($sql, [$id], ['fetchForModel' => false, 'fetch' => 'one']);
     }
 
     public function count()
     {
         $sql = sprintf('SELECT COUNT(*) FROM `%s`', $this->tableName);
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchColumn(0);
+        return $this->findByObject($sql, [], ['fetchForModel' => false, 'fetch' => 'column']);
     }
 
     public function countBy(array $conditions = [], $countField = '*')
@@ -125,10 +134,6 @@ abstract class AbstractTable
            ->setParameters($conditions);
         $stmt = $qb->execute();
         return $stmt->fetchColumn();
-    }
-
-    public function buildQuery(QueryBuilder $qb, array $conditions = [])
-    {
     }
 
     public function insertAll(array $records)
@@ -157,17 +162,13 @@ abstract class AbstractTable
 
     public function isExistsBy(QueryBuilder $qb, array $params = [])
     {
-        $stmt = $this->db->prepare($qb);
-        $stmt->execute($params);
-        return (bool)$stmt->fetchColumn(0);
+        return (bool) $this->findByObject($qb, $params, ['fetchForModel' => false, 'fetch' => 'column']);
     }
 
     public function isExistsById($id)
     {
         $sql = sprintf('SELECT 1 FROM `%s` WHERE id = ?', $this->tableName);
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(array($id));
-        return (bool)$stmt->fetchColumn(0);
+        return (bool) $this->findByObject($sql, array($id), ['fetchForModel' => false, 'fetch' => 'column']);
     }
 
     public function insert($data)
@@ -224,7 +225,7 @@ abstract class AbstractTable
 
     public function foundRows()
     {
-        $stmt = $this->db->query('SELECT FOUND_ROWS()');
-        return (int)$stmt->fetchColumn(0);
+        $sql = 'SELECT FOUND_ROWS()';
+        return (int) $this->findByObject($sql, [], ['fetchForModel' => false, 'fetch' => 'column']);
     }
 }

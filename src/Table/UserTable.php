@@ -13,7 +13,7 @@ class UserTable extends AbstractTable
 
     public function isExistsByEmail($email)
     {
-        $qb = $this->getQueryBuilder('id');
+        $qb = $this->getQueryBuilder('email');
         $qb->where('email = :email');
         return $this->isExistsBy($qb, [
             'email'                   => $email
@@ -24,8 +24,6 @@ class UserTable extends AbstractTable
     {
         $qb = $this->getQueryBuilder('*');
         $qb->where('email = :email');
-        return $this->findOneBy($qb, [
-            'email'                   => $email
-        ]);
+        return $this->findByObject($qb, ['email' => $email], ['fetch' => 'one']);
     }
 }
