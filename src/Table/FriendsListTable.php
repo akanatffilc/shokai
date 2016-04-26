@@ -13,7 +13,7 @@ class FriendsListTable extends AbstractTable
     public function findByUserId($user_id)
     {
         $qb = $this->getQueryBuilder('*');
-        $qb->where('user_id = :user_id');
+        $qb->where('user_id_a = :user_id or user_id_b = :user_id');
         return $this->findByObject($qb, ['user_id' => $user_id]);
     }
     

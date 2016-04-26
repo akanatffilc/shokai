@@ -15,7 +15,8 @@ class FriendsController extends AbstractController
     public function listAction()
     {
         $user = $this->app->getUser();
-        $list = $this->app['service.list.friends']->findByUserId($user->getId());
+        $list = $this->app['service.list.friends']->getUserFriendList($user->getId());
+        var_dump($list);
         return $this->app->json($list, 200, ['Access-Control-Allow-Origin' => '*']);
     }
 }

@@ -28,9 +28,9 @@ class FriendsListService extends AbstractService
         $this->createRecord($params);
     }
     
-    public function findByUserId()
+    public function getUserFriendList($user_id)
     {
-        
+        return $this->findByUserId($user_id);
     }
 
     public function createFriendsList(User $user)
