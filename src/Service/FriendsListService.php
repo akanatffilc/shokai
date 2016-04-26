@@ -35,17 +35,16 @@ class FriendsListService extends AbstractService
 
     public function createFriendsList(User $user)
     {
-        FacebookService::init($user->getFbToken());
+        FacebookService::init($user);
         $users = $this->app['service.user']->findAll();
         foreach($users as $u)
         {
             $a_user_id = $user->getId();
-            $a_fb_id = $user->getFbId();
             $b_user_id = $u->getId();
             $b_fb_id = $u->getFbId();
             
             $isFriend = $this->isExistsByUserIds($a_user_id, $b_user_id);
-            $canAdd = ($isFriend) ? false : FacebookService::isFriends($a_fb_id, $b_fb_id);
+            $canAdd = ($isFriend) ? false : FacebookService::isFriends($b_fb_id);
             if ($canAdd) {
                 $params = [
                     'user_id_a'     => $a_user_id,

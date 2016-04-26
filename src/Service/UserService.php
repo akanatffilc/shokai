@@ -4,10 +4,8 @@ namespace Shokai\Service;
 
 use Shokai\Application;
 use Shokai\Model\User;
-use Shokai\Model\UserFbProfile;
 use Shokai\Table\UserTable;
 use Shokai\Service\Extension\UserServiceTrait;
-use Shokai\Service\FacebookService;
 use Shokai\Util;
 
 class UserService extends AbstractService
@@ -38,14 +36,11 @@ class UserService extends AbstractService
         return $this->createRecord($user_params);
     }
     
-    public function login($state, $code) 
+    public function login($state, $token, $owner) 
     {
         if (!$this->app['service.auth']->isStateOk($state)) {
             return false;
         }
-        
-        $token  = $this->app['service.oauth.facebook']->getAccessToken($code);
-        $owner  = $this->app['service.oauth.facebook']->getResourceOwner($token);
         
         $user = $this->findOneByEmail($owner->getEmail());
         if (empty($user)) {

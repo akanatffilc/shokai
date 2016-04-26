@@ -27,8 +27,8 @@ class UserFbProfileService extends AbstractService
         if (!$this->isExistsByUserId($user->getId()))
         {
             //create user_fb_profile record
-            FacebookService::init($user->getFbToken());
-            $fb_user = FacebookService::getGraphUser($user->getFbId());
+            FacebookService::init($user);
+            $fb_user = FacebookService::getGraphUser();
             $user_fb_profile_params = [
                 UserFbProfile::USER_ID              => $user->getId(),
                 UserFbProfile::NAME                 => $fb_user->getName(),
