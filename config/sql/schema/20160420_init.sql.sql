@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `shokai`.`user` (
   INDEX `ix_user_fb_id_idx` (`fb_id` ASC))
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `shokai`.`user_fb_profile` (
+CREATE TABLE IF NOT EXISTS `shokai`.`user_profile` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `user_id` BIGINT NOT NULL,
   `name` VARCHAR(255) NULL,
@@ -26,14 +26,14 @@ CREATE TABLE IF NOT EXISTS `shokai`.`user_fb_profile` (
   `gender` VARCHAR(45) NULL,
   `relationship_status` VARCHAR(255) NULL,
   `birthday` VARCHAR(255) NULL,
-  `profile_image_url` TEXT NULL,
-  `link` TEXT NULL,
+  `fb_profile_image_url` TEXT NULL,
+  `fb_link` TEXT NULL,
   `locale` VARCHAR(45) NULL,
   `created_at` DATETIME NULL,
   `updated_at` DATETIME NULL,
   PRIMARY KEY (`id`, `user_id`),
-  INDEX `fk_user_fb_profile_user1_idx` (`user_id` ASC),
-  CONSTRAINT `fk_user_fb_profile_user1`
+  INDEX `fk_user_profile_user1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_user_profile_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `shokai`.`user` (`id`)
     ON DELETE NO ACTION
