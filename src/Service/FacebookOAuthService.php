@@ -28,10 +28,11 @@ class FacebookOAuthService extends AbstractService
         return $this->facebook_provider;
     }
     
-    public function getAuthorizationUrl() {
-        return $this->facebook_provider->getAuthorizationUrl([
+    public function getAuthorizationUrl(array $params = []) {
+        $options = array_merge([
             'scope' => self::$permissions
-        ]);
+        ],$params);
+        return $this->facebook_provider->getAuthorizationUrl($options);
     }
     
     public function getAccessToken($code) {

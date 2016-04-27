@@ -15,7 +15,15 @@ class AuthController extends AbstractController
     
     public function loginAction() 
     {
-        $authurl = $this->app['service.oauth.facebook']->getAuthorizationUrl();
+        // if callback returns errors, request params are passed back to login and 'auth_type'=>'rerequest'
+        // must be passed to getAuthorizationUrl
+        $errors     = $this->getCallbackErrors();
+        $ungranted  = $this->getUngrantedQueries();
+        $params     = [];
+        if (!empty($errors) || !(empty($ungranted))) {
+            $params = ['auth_type'=>'rerequest'];
+        }
+        $authurl = $this->app['service.oauth.facebook']->getAuthorizationUrl($params);
         return $this->app->render('auth/login.html.twig',[
             'auth_url' => $authurl
         ]);
@@ -23,7 +31,10 @@ class AuthController extends AbstractController
     
     public function loginCallbackAction() 
     {
-        $this->checkCallbackErrors();
+        $errors = $this->getCallbackErrors();
+        if (!empty($errors)) {
+            return $this->redirectLogin($errors);
+        }
         
         $state          = $this->getGetRequest('state');
         $code           = $this->getGetRequest('code');
@@ -44,18 +55,20 @@ class AuthController extends AbstractController
         }
     }
     
-    private function checkCallbackErrors()
+    private function getCallbackErrors()
     {
         $error = $this->getGetRequest('error');
         if (!empty($error)) {
             $error_reason = $this->getGetRequest('error_reason');
-            return $this->redirectLogin(['access_denied' => $error_reason]);
+            return ['error' => $error, 'error_reason' => $error_reason];
         }
+        return [];
     }
     
-    private function callbackAction()
+    private function getUngrantedQueries()
     {
-        
+        $ungranted = $this->getGetRequest('ungranted');
+        return empty($ungranted) ? [] : ['ungranted' => $ungranted];
     }
     
     public function logoutAction() 
