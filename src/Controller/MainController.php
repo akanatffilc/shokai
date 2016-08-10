@@ -5,7 +5,7 @@ namespace Shokai\Controller;
 use Shokai\Application;
 use Shokai\Controller\AbstractController;
 
-class MainController extends AbstractController
+class MainController extends AbstractController implements LoginAuthenticatedController
 {
     public function __construct(Application $app) 
     {

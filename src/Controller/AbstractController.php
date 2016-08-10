@@ -12,9 +12,6 @@ abstract class AbstractController
     public function __construct(Application $app) 
     {
         $this->app = $app;
-        if(!$this->app->isLoggedin()) {
-            return $this->redirectLogin();
-        }
     }
     
     public function getGetRequest($param, $default = null) 
@@ -23,6 +20,16 @@ abstract class AbstractController
             $this->request = $this->app['request'];
         }
         return $this->request->get($param, $default);
+    }
+    
+    public function getGetRequestToArray($param, $default = null) 
+    {
+        return explode("&", $this->getGetRequest($param, $default), -1);
+    }
+    
+    public function redirect($path, array $params = [])
+    {
+        return $this->app->redirect($this->app->path($path, $params));
     }
     
     public function redirectTop(array $params = [])

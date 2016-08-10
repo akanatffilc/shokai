@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `shokai`.`user` (
   `fb_id` VARCHAR(255) NOT NULL,
   `fb_token` VARCHAR(255) NULL COMMENT 'basic user information necessary for logging into the app',
   `fb_token_expires_at` DATETIME NULL,
+  `is_completed_init` TINYINT(1) NULL,
   `last_login` DATETIME NULL,
   `is_deactivated` TINYINT(1) NULL,
   `deactivated_at` DATETIME NULL,

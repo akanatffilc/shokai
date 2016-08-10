@@ -1,1 +1,9 @@
 <a href="{{ auth_url }}">Log in with Facebook!</a>
+
+{% if ungranted is not empty %}
+<ul>
+    {% for authItem in ungranted %}
+        <li>{{ authItem }}</li>
+    {% endfor %}
+</ul>
+{% endif %}

@@ -24,9 +24,11 @@ class AuthController extends AbstractController
             $params = ['auth_type'=>'rerequest'];
         }
         $authurl = $this->app['service.oauth.facebook']->getAuthorizationUrl($params);
-        return $this->app->render('auth/login.html.twig',[
-            'auth_url' => $authurl
-        ]);
+        $viewData = [
+            'auth_url'  => $authurl,
+            'ungranted' => $ungranted
+        ];
+        return $this->app->render('auth/login.html.twig', $viewData);
     }
     
     public function loginCallbackAction() 
@@ -47,7 +49,7 @@ class AuthController extends AbstractController
         
         if (empty($permissions)) {
             if ($this->app['service.user']->login($state, $token, $owner)) {
-                return $this->app->redirect($this->app->path('init_setup'));
+                return $this->redirectAfterLogin();
             }
             return $this->redirectLogout();
         } else {
@@ -67,19 +69,23 @@ class AuthController extends AbstractController
     
     private function getUngrantedQueries()
     {
-        $ungranted = $this->getGetRequest('ungranted');
-        return empty($ungranted) ? [] : ['ungranted' => $ungranted];
+        $ungranted = $this->getGetRequestToArray('ungranted');
+        return empty($ungranted) ? [] : $ungranted;
+    }
+    
+    private function redirectAfterLogin() 
+    {
+        $isCompletedInit = $this->app->getUser()->getIsCompletedInit();
+        if ($isCompletedInit) {
+            return $this->redirectTop();
+        } else {
+            return $this->redirect('init_setup');
+        }
     }
     
     public function logoutAction() 
     {
         $this->app['service.user']->logout();
         return $this->redirectLogin();
-    }
-    
-    public function fbAuthAction()
-    {
-        $authurl = $this->app['service.oauth.facebook']->getAuthorizationUrl();
-        return $this->app->redirect($authurl);
     }
 }

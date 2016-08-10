@@ -19,10 +19,6 @@ logout:
   path: /logout
   defaults: { _controller: 'Shokai\Controller\AuthController::logoutAction' }
 
-fb_auth:
-  path: /fb_auth
-  defaults: { _controller: 'Shokai\Controller\AuthController::fbAuthAction' }
-
 #friends
 friends_list:
   path: /friends/list
