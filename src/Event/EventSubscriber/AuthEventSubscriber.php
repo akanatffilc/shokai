@@ -39,7 +39,6 @@ class  AuthEventSubscriber implements EventSubscriberInterface{
         }
 
         if ($controller[0] instanceof LoginAuthenticatedController) {
-            $this->app['monolog']->error("is instance");
             $c = $controller[0];
             if(!$this->app->isLoggedin()) {
                 return $c->redirectLogin();

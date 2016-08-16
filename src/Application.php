@@ -3,7 +3,6 @@
 namespace Shokai;
 
 use Silex\Application as SilexApp;
-use \Exception;
 
 class Application extends SilexApp
 {
